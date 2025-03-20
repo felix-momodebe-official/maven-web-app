@@ -95,13 +95,13 @@
 	    <repository>
 	      <id>nexus</id>
 	      <name>SolaviseTech Releases Nexus Repository</name>
-	      <url>http://54.234.86.134:8081/repository/maven-releases/</url>
+	      <url>http://54.82.102.96:8081/repository/maven-releases/</url>
 	    </repository>
 	    
 	    <snapshotRepository>
 	      <id>nexus</id>
 	      <name>SolaviseTech Snapshot Nexus Repository </name>
-	      <url>http://54.234.86.134:8081/repository/maven-snapshots/</url>
+	      <url>http://54.82.102.96:8081/repository/maven-snapshots/</url>
 	    </snapshotRepository>
 	    
 	</distributionManagement>
@@ -123,7 +123,7 @@
 			<plugin>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
-				<version>9.2.11.v20150529</version>
+				<version>9.4.44.v20210927</version>
 				<configuration>
 					<scanIntervalSeconds>10</scanIntervalSeconds>
 					<webApp>
@@ -144,7 +144,13 @@
 				</configuration>
 			</plugin>
 			
-</plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.3.1</version>
+			</plugin>
+			
+		</plugins>
 	</build>
 	
 	
