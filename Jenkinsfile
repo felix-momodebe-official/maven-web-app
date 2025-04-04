@@ -5,7 +5,7 @@ pipeline {
     }
     environment {
         SCANNER_HOME = tool 'sonar-scanner'
-        IMAGE_TAG = "v${env.BUILD_NUMBER}"  // Corrected IMAGE_TAG reference
+        IMAGE_TAG = "v${env.BUILD_NUMBER}" // Corrected IMAGE_TAG reference
     }
 
     stages {
@@ -14,21 +14,25 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/felix-momodebe-official/maven-web-app.git'
             }
         }
+
         stage('Compile') {
             steps {
                 sh 'mvn compile'
             }
         }
+
         stage('Unit Test') {
             steps {
                 sh 'mvn test'
             }
         }
-        stage('Trivy FS') {
+
+        stage('Trivy FS Security Scan') {
             steps {
                 sh 'trivy fs --format table -o fs-report.html .'
             }
         }
+
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonar-server') {
@@ -37,7 +41,7 @@ pipeline {
                           -Dsonar.java.binaries=target'''
                 }
             }
-        } // Closing brace for 'SonarQube Analysis'
+        }
 
         stage('Quality Gate Check') {
             steps {
@@ -45,14 +49,14 @@ pipeline {
                     waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
                 }
             }
-        } // Closing brace for 'Quality Gate Check'
+        }
 
         stage('Maven Build') {
             steps {
                 sh 'mvn package'
             }
         }
-        
+
         stage('Publish Artifact') {
             steps {
                 withMaven(globalMavenSettingsConfig: 'webapp', maven: 'maven3', traceability: true) {
@@ -69,7 +73,7 @@ pipeline {
                     }
                 }
             }
-        } // Closing brace for 'Docker Build & Tag'
+        }
 
         stage('Trivy Image Scan') {
             steps {
@@ -85,10 +89,9 @@ pipeline {
                     }
                 }
             }
-        } // Closing brace for 'Push Docker Image'
+        }
 
-        // ✅ Moved 'Deploy to K8' inside the 'stages' block
-        stage('Deploy to K8') {
+        stage('Deploy to Kubernetes') {
             steps {
                 withKubeConfig(
                     caCertificate: '', 
@@ -99,10 +102,12 @@ pipeline {
                     restrictKubeConfigAccess: false, 
                     serverUrl: 'https://1AD651FE1CD33578216C24CB7F49640A.gr7.us-east-1.eks.amazonaws.com'
                 ) {
+                    sh 'kubectl --kubeconfig=$KUBECONFIG get nodes' // Added validation step
                     sh 'kubectl --kubeconfig=$KUBECONFIG apply -f deployment.yaml'
                     sh 'kubectl --kubeconfig=$KUBECONFIG apply -f service.yaml'
+                    sh 'kubectl --kubeconfig=$KUBECONFIG rollout status deployment/web-app' // Verify successful rollout
                 }
             }
-        } // Closing brace for 'Deploy to K8'
+        }
     }
 }
