@@ -3,7 +3,7 @@
 ## Overview
 This repository contains a **Jenkins-powered Continuous Integration (CI) pipeline** for a **Maven-based web application**. The pipeline ensures an automated, efficient, and secure software development workflow.
 
-## 📌 CI Pipeline Architecture
+## 📌 CI Pipeline Architecture:
 
 ![image](https://github.com/user-attachments/assets/02b84b8c-cf03-4a24-a10f-c7b44e639538)
 
