@@ -85,6 +85,6 @@ pipeline {
                     }
                 }
             }
-        } // Closing brace for 'Push Docker Image'
+        } // Closing brace for 'Push Docker Image.'
     }
 }
