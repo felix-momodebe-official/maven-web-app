@@ -85,14 +85,24 @@ pipeline {
                     }
                 }
             }
-        } // Closing brace for 'Push Docker Image.'
-    }
-    stage('Deploy to K8') {
+        } // Closing brace for 'Push Docker Image'
+
+        // ✅ Moved 'Deploy to K8' inside the 'stages' block
+        stage('Deploy to K8') {
             steps {
-                withKubeConfig(caCertificate: '', clusterName: 'devopsola-cluster', contextName: '', credentialsId: 'KUBECONFIG', namespace: '', restrictKubeConfigAccess: false, serverUrl: 'https://1AD651FE1CD33578216C24CB7F49640A.gr7.us-east-1.eks.amazonaws.com') {
-                      sh 'kubectl --kubeconfig=$KUBECONFIG apply -f deployment.yaml'
-                      sh 'kubectl --kubeconfig=$KUBECONFIG apply -f service.yaml'
-                 }
+                withKubeConfig(
+                    caCertificate: '', 
+                    clusterName: 'devopsola-cluster', 
+                    contextName: '', 
+                    credentialsId: 'KUBECONFIG', 
+                    namespace: '', 
+                    restrictKubeConfigAccess: false, 
+                    serverUrl: 'https://1AD651FE1CD33578216C24CB7F49640A.gr7.us-east-1.eks.amazonaws.com'
+                ) {
+                    sh 'kubectl --kubeconfig=$KUBECONFIG apply -f deployment.yaml'
+                    sh 'kubectl --kubeconfig=$KUBECONFIG apply -f service.yaml'
+                }
             }
-        }
+        } // Closing brace for 'Deploy to K8'
+    }
 }
