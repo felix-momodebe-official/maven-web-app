@@ -98,7 +98,7 @@ pipeline {
                     caCertificate: '', 
                     clusterName: 'devopsola-cluster', 
                     contextName: '', 
-                    credentialsId: 'kubeconfig-secrete', 
+                    credentialsId: 'KUBECONFIG', 
                     namespace: '', 
                     restrictKubeConfigAccess: false, 
                     serverUrl: 'https://39FC4F671ACD6A5FD62614BB82E7E580.gr7.us-east-1.eks.amazonaws.com'
