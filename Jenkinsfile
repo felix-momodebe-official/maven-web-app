@@ -5,7 +5,7 @@ pipeline {
     }
     environment {
         SCANNER_HOME = tool 'sonar-scanner'
-        IMAGE_TAG = "v${env.BUILD_NUMBER}" // Corrected IMAGE_TAG reference
+        IMAGE_TAG = "v${env.BUILD_NUMBER}" // Corrected IMAGE_TAG reference 
         AWS_ACCESS_KEY_ID = credentials('aws-cred')
     }
 
