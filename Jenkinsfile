@@ -6,6 +6,7 @@ pipeline {
     environment {
         SCANNER_HOME = tool 'sonar-scanner'
         IMAGE_TAG = "v${env.BUILD_NUMBER}" // Corrected IMAGE_TAG reference
+        AWS_ACCESS_KEY_ID = credentials('aws-cred')
     }
 
     stages {
@@ -97,10 +98,10 @@ pipeline {
                     caCertificate: '', 
                     clusterName: 'devopsola-cluster', 
                     contextName: '', 
-                    credentialsId: 'KUBECONFIG', 
+                    credentialsId: 'kubeconfig-secrete', 
                     namespace: '', 
                     restrictKubeConfigAccess: false, 
-                    serverUrl: 'https://1AD651FE1CD33578216C24CB7F49640A.gr7.us-east-1.eks.amazonaws.com'
+                    serverUrl: 'https://39FC4F671ACD6A5FD62614BB82E7E580.gr7.us-east-1.eks.amazonaws.com'
                 ) {
                     sh 'kubectl --kubeconfig=$KUBECONFIG get nodes' // Added validation step
                     sh 'kubectl --kubeconfig=$KUBECONFIG apply -f deployment.yaml'
