@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: web-app
-        image: felix081/web_app:v7
+        image: felix081/web_app:__IMAGE_TAG__
         ports:
         - containerPort: 80
