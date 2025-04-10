@@ -28,13 +28,13 @@ spec:
             memory: "512Mi"
         readinessProbe:
           httpGet:
-            path: /
+            path: /tesla
             port: 8080
-          initialDelaySeconds: 10
-          periodSeconds: 5
+          initialDelaySeconds: 30
+          periodSeconds: 10
         livenessProbe:
           httpGet:
-            path: /
+            path: /tesla
             port: 8080
-          initialDelaySeconds: 15
-          periodSeconds: 10
+          initialDelaySeconds: 60
+          periodSeconds: 20
