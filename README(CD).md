@@ -50,6 +50,11 @@ Make sure to configure the following Jenkins credentials:
 
 ## Architecture Diagram
 
+- ### High-Level Overview:
+![image](https://github.com/user-attachments/assets/c7d2d2bf-5318-463e-8d15-36444ca49fd7)
+
+- Detailed Implementation:
+
 ![image](https://github.com/user-attachments/assets/e4588cec-7d93-40c8-a2a2-f31d1c9f96c2)
 
 
