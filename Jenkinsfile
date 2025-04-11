@@ -5,8 +5,9 @@ pipeline {
     }
     environment {
         SCANNER_HOME = tool 'sonar-scanner'
-        IMAGE_TAG = "v${env.BUILD_NUMBER}" // Corrected IMAGE_TAG reference 
-        AWS_ACCESS_KEY_ID = credentials('aws-cred')
+        IMAGE_TAG = "v${env.BUILD_NUMBER}"
+        AWS_REGION = 'us-east-1'
+        CLUSTER_NAME = 'my-web-cluster'
     }
 
     stages {
@@ -94,21 +95,45 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                withKubeConfig(
-                    caCertificate: '', 
-                    clusterName: 'devopsola-cluster', 
-                    contextName: '', 
-                    credentialsId: 'KUBECONFIG', 
-                    namespace: '', 
-                    restrictKubeConfigAccess: false, 
-                    serverUrl: 'https://39FC4F671ACD6A5FD62614BB82E7E580.gr7.us-east-1.eks.amazonaws.com'
-                ) {
-                    sh 'kubectl --kubeconfig=$KUBECONFIG get nodes' // Added validation step
-                    sh 'kubectl --kubeconfig=$KUBECONFIG apply -f deployment.yaml'
-                    sh 'kubectl --kubeconfig=$KUBECONFIG apply -f service.yaml'
-                    sh 'kubectl --kubeconfig=$KUBECONFIG rollout status deployment/web-app' // Verify successful rollout
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-cred',
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                ]]) {
+                    sh '''
+                        echo "Updating kubeconfig for EKS..."
+                        aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
+                        
+                        echo "Updating image tag in deployment manifest..."
+                        sed -i "s|felix081/web_app:\\${IMAGE_TAG}|felix081/web_app:${IMAGE_TAG}|g" deployment.yaml
+                        
+                        echo "Applying Kubernetes manifests..."
+                        kubectl apply -f deployment.yaml
+                        kubectl apply -f service.yaml
+
+                        echo "Checking deployment rollout status..."
+                        kubectl rollout status deployment/web-app
+                        
+                        echo "Getting service details..."
+                        kubectl get svc web-app-service -o wide
+                    '''
                 }
             }
+        }
+    }
+    
+    post {
+        always {
+            archiveArtifacts artifacts: '*.yaml', allowEmptyArchive: true
+            archiveArtifacts artifacts: '*-report.html', allowEmptyArchive: true
+            cleanWs()
+        }
+        success {
+            echo 'Deployment completed successfully!'
+        }
+        failure {
+            echo 'Deployment failed!'
         }
     }
 }
