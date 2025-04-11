@@ -47,3 +47,11 @@ Make sure to configure the following Jenkins credentials:
 - The EKS cluster is named "my-web-cluster" in the us-east-1 region
 - The web application is exposed on port 8080 internally and port 80 externally
 - The deployment includes health checks to ensure application availability
+
+## Architecture Diagram
+
+![image](https://github.com/user-attachments/assets/e4588cec-7d93-40c8-a2a2-f31d1c9f96c2)
+
+
+The diagram above illustrates the AWS infrastructure and Kubernetes resources used to deploy our web application.
+
